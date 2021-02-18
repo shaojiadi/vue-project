@@ -11,7 +11,13 @@
     <br>
     {{firstName}}-- {{lastName}}
     <br>
-    <v-button>提交</v-button>
+    <v-button @click="getData()">提交</v-button>
+    <hr>
+    <br>
+    <input type="text" v-model="username" @keyup="getData()">
+    <ul>
+      <li v-for="(item,index) in list" :key="index">{{item}}</li>
+    </ul>
     <br>
     <br>
     <v-button class="primary">提交</v-button>
@@ -21,6 +27,8 @@
 </template>
 
 <script>
+// import axios from 'axios';
+
 import Foot from '@/components/Foot.vue'
 import head from '@/components/header.vue'
 import input from '@/components/input.vue'
@@ -44,12 +52,41 @@ export default {
       name: 'jd',
       keyword: '6666',
       firstName: '',
-      lastName: ''
+      lastName: '',
+      list: [],
+      username: '',
+      timer: ''
     }
   },
   methods: {
     getInfo(data){
       console.log(data);
+    },
+    getData(){
+      /* var api = "http://test-trgj.test176.cn/channel/channel/getChannelIdByUrl?url=http://test-trgj.test176.cn/";
+      this.Axios.get(api).then((res)=>{
+        console.log(res);
+      }).catch((err)=>{
+        console.log(err);
+      }) */
+      
+      //https://sp0.baidu.com/5a1Fazu8AA54nxGko9WTAnF6hhy/su?wd=golang&cb=xxxx     百度的回调函数用cb代替
+      if(this.username!=''){
+        clearTimeout(this.timer);  //清除定时器     函数防抖实现
+        this.timer = setTimeout(()=>{
+          this.fetchJsonp('https://sp0.baidu.com/5a1Fazu8AA54nxGko9WTAnF6hhy/su?wd='+this.username,{
+            jsonpCallback: 'cb'
+          }).then((res)=>{
+            return res.json()
+          }).then((json)=>{
+            this.list = json.s;
+          }).catch((error)=>{
+            console.log(error);
+          })
+        },2000)
+      }else {
+        this.list = [];
+      }
     }
   }
 }
