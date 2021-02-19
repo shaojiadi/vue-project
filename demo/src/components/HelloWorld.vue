@@ -29,12 +29,21 @@
       <li><a href="https://vue-loader.vuejs.org" target="_blank" rel="noopener">vue-loader</a></li>
       <li><a href="https://github.com/vuejs/awesome-vue" target="_blank" rel="noopener">awesome-vue</a></li>
     </ul>
+    <h3>{{title}}</h3>
   </div>
 </template>
 
 <script>
+import {inject} from "vue"
 export default {
   name: 'HelloWorld',
+  // inject: ['titles'],
+  setup(){
+    let title = inject('title');   //provider inject实现父子组件传值的时候，子组件改变数据也会影响父组件
+    return {
+      title
+    }
+  },
   props: {
     msg: String,
     home: Object
