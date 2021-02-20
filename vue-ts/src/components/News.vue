@@ -8,6 +8,9 @@
     <div>
       {{reverseTitle}}
     </div>
+    <div>
+      <button @click="setTitle('改变后的title')">改变title</button>
+    </div>
   </div>
 </template>
 
@@ -18,7 +21,7 @@ import { defineComponent } from 'vue'
 interface News {
   title:string,
   description: string,
-  count: number,
+  count: number|string, //指定多个类型
   content?: string   //?可选参数
 }
 
@@ -43,6 +46,9 @@ export default defineComponent({
   methods: {
     setCount():void{
       this.count = 123
+    },
+    setTitle(title:string):void {        //没有返回用void
+      this.title = title
     }
   },
   computed: {

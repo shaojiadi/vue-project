@@ -7,7 +7,7 @@
     </div>
     <h3>{{title}}</h3>
   </div>
-  <router-view/>
+  <router-view/>   <!--动态挂载组件-->
 </template>
 
 <script>

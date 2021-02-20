@@ -2,7 +2,10 @@
   <div class="home">
     <img alt="Vue logo" src="../assets/logo.png">
     <HelloWorld />
+    <hr>
     <News />  
+    <hr>
+    <Users />  
   </div>
 </template>
 
@@ -10,12 +13,14 @@
 import { defineComponent } from 'vue'
 import HelloWorld from '@/components/HelloWorld.vue' // @ is an alias to /src
 import News from '@/components/News.vue'
+import Users from '@/components/Users.vue'
 
 export default defineComponent({
   name: 'Home',
   components: {
     HelloWorld,
-    News
+    News,
+    Users
   }
 })
 </script>
