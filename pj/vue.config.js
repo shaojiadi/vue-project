@@ -1,18 +1,15 @@
 const path = require('path')
-console.log(process.env.VUE_APP_MODE);
 
-if(process.env.VUE_APP_MODE=='development'){
+if(process.env.VUE_APP_MODE=="'development'"){
     //开发环境下的执行操作
     console.log(999);
-}else if(process.env.VUE_APP_MODE=='test'){
+}else if(process.env.VUE_APP_MODE=="'test'"){
     //测试环境下的执行操作
     console.log(777);
 }else{
     //生产环境下的执行操作
     console.log(6666);
 }
-
-console.log(888);
    
 module.exports = {
   publicPath: process.env.NODE_ENV === 'production' ? '' : '/', // 公共路径
