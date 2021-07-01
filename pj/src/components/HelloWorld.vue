@@ -14,7 +14,7 @@
   </a-table>
 </template>
 <script>
-import {reactive, ref,toRefs,onMounted} from 'vue'
+import {defineComponent,reactive, ref,toRefs,onMounted} from 'vue'
 import {queryData} from '../service/getData'
 
 
@@ -103,7 +103,7 @@ const columns = [
   },
 ];
 
-export default {
+export default defineComponent({
   setup(){
     const pagination = reactive({
       pageSize: 10, // 默认每页显示数量
@@ -175,7 +175,7 @@ export default {
       div.parentNode.removeChild(div)
     }
   }
-};
+});
 </script>
 
 <style lang="scss" scoped>

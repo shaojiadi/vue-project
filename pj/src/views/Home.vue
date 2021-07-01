@@ -1,5 +1,5 @@
 <template>
-  <div class="home">
+  <div class="box-wrap">
     <div class="flex-box">
       <div class="icon"> 
         <div></div>
@@ -35,10 +35,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-  .home {
-    width: 100%;
-    height: 100%;
-    padding: 14px;
+  .box-wrap {
     .icon {
       width: 16px;
       height: 16px;

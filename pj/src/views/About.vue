@@ -1,73 +1,87 @@
 <template>
   <div class="box-wrap">
     <div class="left-box">
-      <a-input-search style="margin-bottom: 8px" placeholder="Search" @change="onChange" />
+      <a-input-search v-model:value="searchValue" style="margin-bottom: 8px;width: 226px" placeholder="请输入字典名称查询" />
       <a-tree
-        :expanded-keys="expandedKeys"
+        :expandedKeys="expandedKeys"
         :auto-expand-parent="autoExpandParent"
         :tree-data="gData"
         @expand="onExpand"
+        :show-icon="showIcon"
       >
-        <a-icon slot="switcherIcon" type="down" />
-        <!-- <template slot="title" slot-scope="{ title }">
+        <template #title="{ title }">
           <span v-if="title.indexOf(searchValue) > -1">
             {{ title.substr(0, title.indexOf(searchValue)) }}
             <span style="color: #f50">{{ searchValue }}</span>
             {{ title.substr(title.indexOf(searchValue) + searchValue.length) }}
           </span>
           <span v-else>{{ title }}</span>
-        </template> -->
+        </template>
       </a-tree>
     </div>
   </div>
 </template>
-
 <script>
+import { defineComponent, ref, watch } from 'vue';
 const x = 3;
 const y = 2;
 const z = 1;
-const gData = [];
+const genData = [];
 
 const generateData = (_level, _preKey, _tns) => {
   const preKey = _preKey || '0';
-  const tns = _tns || gData;
-
+  const tns = _tns || genData;
   const children = [];
+
   for (let i = 0; i < x; i++) {
     const key = `${preKey}-${i}`;
-    tns.push({ title: key, key, scopedSlots: { title: 'title' } });
+    tns.push({
+      title: key,
+      key,
+    });
+
     if (i < y) {
       children.push(key);
     }
   }
+
   if (_level < 0) {
     return tns;
   }
+
   const level = _level - 1;
   children.forEach((key, index) => {
     tns[index].children = [];
     return generateData(level, key, tns[index].children);
   });
 };
-generateData(z);
 
+generateData(z);
 const dataList = [];
+
 const generateList = data => {
   for (let i = 0; i < data.length; i++) {
     const node = data[i];
     const key = node.key;
-    dataList.push({ key, title: key });
+    dataList.push({
+      key,
+      title: key,
+    });
+
     if (node.children) {
       generateList(node.children);
     }
   }
 };
-generateList(gData);
+
+generateList(genData);
 
 const getParentKey = (key, tree) => {
   let parentKey;
+
   for (let i = 0; i < tree.length; i++) {
     const node = tree[i];
+
     if (node.children) {
       if (node.children.some(item => item.key === key)) {
         parentKey = node.key;
@@ -76,41 +90,45 @@ const getParentKey = (key, tree) => {
       }
     }
   }
+
   return parentKey;
 };
-export default {
-  name: 'About',
-  data() {
-    return {
-      expandedKeys: [],
-      searchValue: '',
-      autoExpandParent: true,
-      gData,
+
+export default defineComponent({
+  setup() {
+    const expandedKeys = ref([]);
+    const searchValue = ref('');
+    const autoExpandParent = ref(true);
+    const gData = ref(genData);
+
+    const onExpand = keys => {
+      expandedKeys.value = keys;
+      autoExpandParent.value = false;
     };
-  },
-  methods: {
-    onExpand(expandedKeys) {
-      this.expandedKeys = expandedKeys;
-      this.autoExpandParent = false;
-    },
-    onChange(e) {
-      const value = e.target.value;
-      const expandedKeys = dataList
+
+    watch(searchValue, value => {
+      const expanded = dataList
         .map(item => {
           if (item.title.indexOf(value) > -1) {
-            return getParentKey(item.key, gData);
+            return getParentKey(item.key, gData.value);
           }
+
           return null;
         })
         .filter((item, i, self) => item && self.indexOf(item) === i);
-      Object.assign(this, {
-        expandedKeys,
-        searchValue: value,
-        autoExpandParent: true,
-      });
-    },
+      expandedKeys.value = expanded;
+      searchValue.value = value;
+      autoExpandParent.value = true;
+    });
+    return {
+      expandedKeys,
+      searchValue,
+      autoExpandParent,
+      gData,
+      onExpand,
+    };
   },
-};
+});
 </script>
 
 
@@ -118,5 +136,7 @@ export default {
   .left-box {
     width: 280px;
     height: 100%;
+    border: 1px solid #cccccc;
+    padding: 14px;
   }
 </style>
