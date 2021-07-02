@@ -12,6 +12,9 @@ if(process.env.VUE_APP_MODE=="'development'"){
 }
    
 module.exports = {
+  chainWebpack (config) {
+    config.entry('main').add('@babel/polyfill')    
+  },
   publicPath: process.env.NODE_ENV === 'production' ? '' : '/', // 公共路径
   outputDir: process.env.outputDir,
   lintOnSave: false,
@@ -19,6 +22,7 @@ module.exports = {
     host: "0.0.0.0",
     port: 8000, // 端口号
     open: true, //编译完成时打开网页
+    // disableHostCheck: true, //跳过host检查
     proxy: {
         // 配置跨域
         '/api': {
