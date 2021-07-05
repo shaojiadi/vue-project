@@ -1,5 +1,6 @@
 <template>
-  <a-table
+  <div>
+    <a-table
     :columns="columns"
     :data-source="data"
     :pagination="pagination"
@@ -9,12 +10,13 @@
     bordered
     class="main-table"
     :scroll="{ x: 'calc(700px + 50%)'}"
-  >
-    <template slot="name" slot-scope="name"> {{ name.first }} {{ name.last }} </template> 
-  </a-table>
+    >
+      <template slot="name" slot-scope="name"> {{ name.first }} {{ name.last }} </template> 
+    </a-table>
+  </div>
 </template>
 <script>
-import {defineComponent,reactive, ref,toRefs,onMounted} from 'vue'
+import {defineComponent,reactive, ref,toRefs,onMounted,watch} from 'vue'
 import {queryData} from '../service/getData'
 
 
@@ -104,7 +106,7 @@ const columns = [
 ];
 
 export default defineComponent({
-  setup(){
+  setup(props){
     const pagination = reactive({
       pageSize: 10, // 默认每页显示数量
       showTotal: total => `共 ${total} 条`, // 显示总数
@@ -113,14 +115,18 @@ export default defineComponent({
       showSizeChange: (current, pageSize) => this.pageSize = pageSize, // 改变每页数量时更新显示
     })
 
-    onMounted(()=>{
-      console.log('onMounted');
+
+    watch(props,(newValue,oldValue)=>{
+      const content = ref(newValue)
+      console.log(content.value);
     })
 
+
     return {
-      pagination
+      pagination,
     }
   },
+  props: ['content'],
   data() {
     return {
       data: [],
@@ -133,7 +139,6 @@ export default defineComponent({
   },
   methods: {
     handleTableChange(pagination, filters, sorter) {
-      console.log(pagination);
       const pager = { ...this.pagination };
       pager.current = pagination.current;
       this.pagination = pager;
@@ -152,8 +157,6 @@ export default defineComponent({
         ...params,
       }).then(({ data }) => {
         const pagination = { ...this.pagination };
-        // Read total count from server
-        // pagination.total = data.totalCount;
         pagination.total = 200;
         this.loading = false;
         this.data = data.results;
@@ -164,17 +167,13 @@ export default defineComponent({
   updated(){
     var div = document.querySelector('.ant-pagination-total-text');
     var div2 = document.querySelector('.ant-pagination-options');
-    var text = document.querySelector('.ant-select-selection-item');
-    if(text){
-      text.textContent = this.pagination.pageSize+'条 / 页';
-    }
     if(div&&div2){
       let div3 = div.cloneNode(true);
       div.parentNode.insertBefore(div3,div2);
       // div.parentNode.appendChild(div3);　
       div.parentNode.removeChild(div)
     }
-  }
+  },
 });
 </script>
 

@@ -2,10 +2,24 @@
   <div id="nav">
     <!-- <router-link to="/">Home</router-link> |
     <router-link to="/about">About</router-link> -->
-    <router-view/>
-
+    <a-config-provider :locale="locale">
+      <router-view />
+    </a-config-provider>
   </div>
 </template>
+
+<script>
+import zhCN from 'ant-design-vue/lib/locale-provider/zh_CN'
+
+export default {
+  data(){
+    return {
+      locale: zhCN
+    }
+  }
+}
+</script>
+
 
 <style lang="scss">
 @import "assets/css/main.scss";

@@ -3,14 +3,26 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
-import { Input, Table, message } from 'ant-design-vue';
+import { Input, Table, message, Pagination,ConfigProvider } from 'ant-design-vue';
 import 'ant-design-vue/dist/antd.css';
 
+const components = [
+  Input,
+  Table,
+  Pagination,
+  ConfigProvider
+]
+
+// export function setupAntd(app){
+ 
+// }
 
 const app = createApp(App);
 app.config.productionTip = false;  //阻止启动生产消息
 
-app.use(Table).use(Input)
+components.forEach(component => {
+  app.use(component)
+})
 
 app.config.globalProperties.$message = message;   //添加ant全局消息
 

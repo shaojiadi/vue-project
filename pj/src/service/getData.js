@@ -1,10 +1,11 @@
 import axios from 'axios'
 
+// axios.defaults.headers["Content-Type"] = "application/x-www-form-urlencoded;charset=utf-8";  //设置请求头,[自定义]
+// axios.defaults.withCredentials=true;  //前端跨域传递Cookie设置
+
 //在请求时在请求参数上统一添加参数
 axios.interceptors.request.use((config) => {
-
     // const { contentType } = config
-
     // 请求token判断
     // if (token) {
     //   config.headers["Authorization"] = "Bearer " + user.accessToken;
