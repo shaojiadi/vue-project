@@ -103,4 +103,25 @@
   }
 }
 
+.icon {
+  width: 16px;
+  height: 16px;
+  vertical-align: -0.15em;
+  fill: currentColor;
+  overflow: hidden;
+}
 
+
+.left-box {
+  // .ant-tree>li>ul>li .ant-tree-child-tree .ant-tree-treenode-selected {
+  //   background-color: #fffbe0;
+  // }
+  .ant-tree li .ant-tree-node-content-wrapper.ant-tree-node-selected {
+    background-color: #fffbe0;
+  }
+}
+
+
+.dictionaries-modal .ant-btn-primary span{
+  color: #fff;
+}

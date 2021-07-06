@@ -3,14 +3,18 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
-import { Input, Table, message, Pagination,ConfigProvider } from 'ant-design-vue';
+import { Input, Table, message, Pagination,ConfigProvider,Tree,Modal,Form,Button } from 'ant-design-vue';
 import 'ant-design-vue/dist/antd.css';
 
 const components = [
   Input,
   Table,
   Pagination,
-  ConfigProvider
+  ConfigProvider,
+  Tree,
+  Modal,
+  Form,
+  Button
 ]
 
 // export function setupAntd(app){
