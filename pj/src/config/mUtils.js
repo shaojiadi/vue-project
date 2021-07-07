@@ -22,3 +22,6 @@ Date.prototype.format = function(format) {
   }
   return format;
 };
+
+
+export const number = /^[0-9]*$/; //数字值
