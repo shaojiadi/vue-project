@@ -1,37 +1,7 @@
 <template>
   <div class="box-wrap flex-box">
     <div class="left-box">
-      <div>
-        <a-input v-model:value="searchValue" class="search-input" placeholder="请输入字典名称查询">
-          <template #suffix>
-            <svg class="icon svg-icon" aria-hidden="true" style="color:#ccc">
-              <use xlink:href="#iconsearch"></use>
-            </svg>
-          </template>
-        </a-input>
-        <svg class="icon svg-icon" aria-hidden="true" @click="showModal">
-          <use xlink:href="#iconadd"></use>
-        </svg>
-      </div>
-      <a-tree
-        :expandedKeys="expandedKeys"
-        :auto-expand-parent="autoExpandParent"
-        :tree-data="gData"
-        @expand="onExpand"
-      >
-      
-        <template #title="{ title }">
-          <svg class="icon svg-icon" aria-hidden="true" style="margin-right:8px">
-            <use xlink:href="#iconfolder"></use>
-          </svg>
-          <span v-if="title.indexOf(searchValue) > -1">
-            {{ title.substr(0, title.indexOf(searchValue)) }}
-            <span style="color: #f50">{{ searchValue }}</span>
-            {{ title.substr(title.indexOf(searchValue) + searchValue.length) }}
-          </span>
-          <span v-else>{{ title }}</span>
-        </template>
-      </a-tree>
+      <TagList @showModal="showModal"/>
     </div>
     <div class="right-box">
       <div class="page-head">
@@ -47,7 +17,7 @@
               <span class="block-header-blue"></span>
               基础信息
             </div>
-            <div class="block-header-right">
+            <div class="block-header-right" @click="editDicInfo">
               <svg class="icon svg-icon" aria-hidden="true" style="margin-right:10px">
                 <use xlink:href="#iconedit1"></use>
               </svg>
@@ -112,146 +82,127 @@
               <button class="menu-button" @click="addDictionaryData">添加</button>
             </div>
           </div>
-          <AssociatedInformation :content="content"/>
+          <a-table
+            :columns="columns"
+            :data-source="data"
+            :pagination="false"
+            :loading="loading"
+            @change="handleTableChange"
+            :row-key="record => record.login.uuid"
+            bordered
+            class="main-table"
+            >
+              <template #tags>
+                <span class="role-group"></span>已启用
+              </template>
+              <template #email>
+                <a class="edit-font" @click="openDialog">编辑</a>
+                <a class="edit-font">|</a>
+                <a class="edit-font" @click="deleteList">删除</a>
+              </template>
+          </a-table>
         </div>
       </div>
     </div>
     <!-- 字典分类 -->
     <a-modal
-      title="添加字典分类"
+      :title="isEdit?'编辑字典分类':'添加字典分类'"
       v-model:visible="visible"
       :confirm-loading="confirmLoading"
       @ok="handleOk"
       class="dictionaries-modal"
       :footer="null"
     >
-      <DictionaryClassification @closeDialog="visible=false"/>
+      <DictionaryClassification @closeDialog="visible=false" v-if="visible"  :isEdit="isEdit"/>
     </a-modal>
     <!-- 字典数据值 -->
     <a-modal
-      title="添加字典数据值"
+      :title="isEdit?'编辑字典数据值':'添加字典数据值'"
       v-model:visible="visibleDictionaryData"
       :confirm-loading="confirmLoading2"
       @ok="handleOk2"
       class="dictionaries-modal"
       :footer="null"
     >
-      <DictionaryValue @closeDialog="visibleDictionaryData=false"/>
+      <DictionaryValue @closeDialog="visibleDictionaryData=false" v-if="visibleDictionaryData" :isEdit="isEdit"/>
     </a-modal>
   </div>
 </template>
 <script>
-import { defineComponent, ref, watch,toRaw, reactive} from 'vue';
-import AssociatedInformation from '@/components/AssociatedInformation.vue'
+import { defineComponent, ref, watch,toRaw, reactive,createVNode} from 'vue';
+import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
 import DictionaryClassification from '@/components/DictionaryClassification.vue'
 import DictionaryValue from '@/components/DictionaryValue.vue'
-import { message } from 'ant-design-vue'
-
-const x = 3;
-const y = 2;
-const z = 1;
-const genData = [];
-
-const generateData = (_level, _preKey, _tns) => {
-  const preKey = _preKey || '0';
-  const tns = _tns || genData;
-  const children = [];
-
-  for (let i = 0; i < x; i++) {
-    const key = `${preKey}-${i}`;
-    tns.push({
-      title: key,
-      key,
-    });
-
-    if (i < y) {
-      children.push(key);
-    }
-  }
-
-  if (_level < 0) {
-    return tns;
-  }
-
-  const level = _level - 1;
-  children.forEach((key, index) => {
-    tns[index].children = [];
-    return generateData(level, key, tns[index].children);
-  });
-};
-
-generateData(z);
-const dataList = [];
-
-const generateList = data => {
-  for (let i = 0; i < data.length; i++) {
-    const node = data[i];
-    const key = node.key;
-    dataList.push({
-      key,
-      title: key,
-    });
-
-    if (node.children) {
-      generateList(node.children);
-    }
-  }
-};
-
-generateList(genData);
-
-const getParentKey = (key, tree) => {
-  let parentKey;
-
-  for (let i = 0; i < tree.length; i++) {
-    const node = tree[i];
-
-    if (node.children) {
-      if (node.children.some(item => item.key === key)) {
-        parentKey = node.key;
-      } else if (getParentKey(key, node.children)) {
-        parentKey = getParentKey(key, node.children);
-      }
-    }
-  }
-
-  return parentKey;
-};
+import TagList from '@/components/tagList.vue'
+import {queryData} from '../service/getData'
+import { Modal } from 'ant-design-vue';
+//列表
+const columns = [
+  {
+    title: '序号',
+    dataIndex: 'name',
+    width: 44,
+    align: 'center',
+  },
+  {
+    title: '数据值名称',
+    dataIndex: 'gender',
+    width: 148,
+    align: 'center'
+  },
+  {
+    title: '数据键值',
+    dataIndex: 'email',
+    width: 108,
+    align: 'center',
+    ellipsis: true
+  },
+  {
+    title: '排序',
+    dataIndex: 'email',
+    width: 64,
+    align: 'center',
+    ellipsis: true
+  },
+  {
+    title: '状态',
+    dataIndex: 'tags',
+    width: 108,
+    align: 'center',
+    ellipsis: true,
+    slots: {
+      customRender: 'tags',
+    },
+  },
+  {
+    title: '创建时间',
+    width: 155,
+    dataIndex: 'email',
+    align: 'center',
+    ellipsis: true
+  },
+  {
+    title: '操作',
+    width: 129,
+    dataIndex: 'email',
+    align: 'center',
+    ellipsis: true,
+    slots: {
+      customRender: 'email',
+    },
+  },
+];
 
 export default defineComponent({
   setup() {
-    //树形图
-    const expandedKeys = ref([]);
-    const searchValue = ref('');
-    const autoExpandParent = ref(true);
-    const gData = ref(genData);
-
-    const onExpand = keys => {
-      expandedKeys.value = keys;
-      autoExpandParent.value = false;
-    };
-
-    watch(searchValue, value => {
-      const expanded = dataList
-        .map(item => {
-          if (item.title.indexOf(value) > -1) {
-            return getParentKey(item.key, gData.value);
-          }
-
-          return null;
-        })
-        .filter((item, i, self) => item && self.indexOf(item) === i);
-      expandedKeys.value = expanded;
-      searchValue.value = value;
-      autoExpandParent.value = true;
-    });
-
     // 字典分类模态框
     const visible = ref(false);
     const confirmLoading = ref(false);
+    const isEdit = ref(true);
 
     const showModal = () => {
       visible.value = true;
+      isEdit.value = false;
     };
 
     const handleOk = () => {
@@ -262,11 +213,17 @@ export default defineComponent({
       }, 2000);
     };
 
+    const editDicInfo = ()=>{
+      visible.value = true;
+      isEdit.value = true;
+    }
+
     // 字典数据值模态框
     const visibleDictionaryData = ref(false);
     const confirmLoading2 = ref(false);
     const addDictionaryData = () => {
       visibleDictionaryData.value = true;
+      isEdit.value = false
     };
 
     const handleOk2 = () => {
@@ -276,36 +233,97 @@ export default defineComponent({
         confirmLoading2.value = false;
       }, 2000);
     };
+
+    const openDialog = () => {
+      visibleDictionaryData.value = true;
+      isEdit.value = true;
+    }
+
+    const deleteList = ()=>{
+      Modal.confirm({
+        title: '你确定要删除改字典数据吗?',
+        icon: createVNode(ExclamationCircleOutlined),
+        content: createVNode(
+          'div',
+          {
+            style: 'color:#666666;',
+          },
+          '删除操作不可逆，请谨慎操作！',
+        ),
+
+        onOk() {
+          console.log('OK');
+        },
+
+        onCancel() {
+          console.log('Cancel');
+        },
+
+        class: 'test',
+      });
+    }
     
 
     return {
-      expandedKeys,
-      searchValue,
-      autoExpandParent,
-      gData,
-      onExpand,
-
       // 字典分类
       visible,
       confirmLoading,
       showModal,
       handleOk,
+      editDicInfo,
+      isEdit,
 
       //字典数据值
       visibleDictionaryData,
       confirmLoading2,
       addDictionaryData,
-      handleOk2
+      handleOk2,
+      openDialog,
+      deleteList
     };
   },
-  mounted(){
-    // console.log(this.$message.success('77'));
-  },
   components: {
-    AssociatedInformation,
     DictionaryClassification,
-    DictionaryValue
+    DictionaryValue,
+    TagList
   },
+  mounted() {
+    this.fetch();
+  },
+  data() {
+    return {
+      data: [],
+      loading: false,
+      columns,
+    };
+  },
+  methods: {
+    handleTableChange(pagination, filters, sorter) {
+      const pager = { ...this.pagination };
+      pager.current = pagination.current;
+      this.pagination = pager;
+      this.fetch({
+        results: pagination.pageSize,
+        page: pagination.current,
+        sortField: sorter.field,
+        sortOrder: sorter.order,
+        ...filters,
+      });
+    },
+    fetch(params = {}) {
+      this.loading = true;
+      queryData({
+        results: 10,
+        ...params,
+      }).then(({ data }) => {
+        const pagination = { ...this.pagination };
+        pagination.total = 200;
+        this.loading = false;
+        this.data = data.results;
+        this.pagination = pagination;
+      });
+    },
+  }
 });
 </script>
 
@@ -316,10 +334,6 @@ export default defineComponent({
     height: 100%;
     border-right: 1px solid #cccccc;
     padding: 14px;
-  }
-
-  .search-input {
-    margin: 0 8px 8px 0;width: 226px;
   }
 
   .right-box {
@@ -374,6 +388,21 @@ export default defineComponent({
     .menu-manage-detail-value {
       width: calc(100% - 128px);
     }
+  }
+
+
+  .edit-font {
+    font-size: 12px;
+    margin: 0 3px;
+  }
+
+  .role-group {
+    display: inline-block;
+    margin-right: 6px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #4ACFB1;
   }
 </style>
 

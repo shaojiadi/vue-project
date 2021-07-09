@@ -11,7 +11,6 @@
     class="main-table"
     :scroll="{ x: 'calc(700px + 50%)'}"
     >
-      <template slot="name" slot-scope="name"> {{ name.first }} {{ name.last }} </template> 
     </a-table>
   </div>
 </template>

@@ -32,7 +32,7 @@
     </a-form-item>
     <a-form-item :wrapper-col="{ span: 14, offset: 4 }">
       <a-button type="primary" @click="onSubmit" style="width:100px">确定</a-button>
-      <a-button style="margin-left: 10px;width:100px" @click="resetForm" class="btn">取消</a-button>
+      <a-button style="margin-left: 10px;width:100px" @click="$emit('closeDialog')" class="btn">取消</a-button>
     </a-form-item>
   </a-form>
 </template>
@@ -42,7 +42,9 @@ import { defineComponent, ref, watch,toRaw, reactive} from 'vue';
 import { message } from 'ant-design-vue'
 
 export default defineComponent({
+  props: ['isEdit'],
   setup(props,ctx){
+    console.log(props);
     //form表单
     const formRef = ref();
     const formState = reactive({
@@ -104,10 +106,6 @@ export default defineComponent({
         });
     };
 
-    const resetForm = () => {
-      formRef.value.resetFields();
-    };
-
     return {
       //form表单
       formRef,
@@ -121,7 +119,6 @@ export default defineComponent({
       formState,
       rules,
       onSubmit,
-      resetForm,
     }
   }
 })

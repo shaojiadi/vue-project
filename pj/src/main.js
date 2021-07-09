@@ -1,9 +1,9 @@
-import "@babel/polyfill";     //将es6转换为浏览器支持的es5,支持低版本浏览器
+//import "@babel/polyfill";     //将es6转换为浏览器支持的es5,支持低版本浏览器
 import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
-import { Input, Table, message, Pagination,ConfigProvider,Tree,Modal,Form,Button,Select,Radio } from 'ant-design-vue';
+import { Input, Table, message, Pagination,ConfigProvider,Tree,Modal,Form,Button,Select,Radio,Dropdown,Menu  } from 'ant-design-vue';
 import 'ant-design-vue/dist/antd.css';
 
 const components = [
@@ -17,6 +17,8 @@ const components = [
   Button,
   Select,
   Radio,
+  Dropdown,
+  Menu
 ]
 
 

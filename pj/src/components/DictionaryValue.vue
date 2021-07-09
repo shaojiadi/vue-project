@@ -13,7 +13,7 @@
       <a-input v-model:value="formState.region" placeholder="请输入数据值名称" :maxlength="30"/>
     </a-form-item>
     <a-form-item label="数据键值"  name="date1">
-      <a-input  v-model:value="formState.date1" placeholder="请输入数据键值" :maxlength="100"/>  
+      <a-input  v-model:value="formState.date1" placeholder="请输入数据键值"/>  
     </a-form-item>
     <a-form-item label="排序"  name="sort">
       <a-input  v-model:value="formState.sort" placeholder="请输入排序"/>  
@@ -26,7 +26,7 @@
     </a-form-item>
     <a-form-item :wrapper-col="{ span: 14, offset: 4 }">
       <a-button type="primary" @click="onSubmit" style="width:100px">确定</a-button>
-      <a-button style="margin-left: 10px;width:100px" @click="resetForm" class="btn">取消</a-button>
+      <a-button style="margin-left: 10px;width:100px" @click="$emit('closeDialog')" class="btn">取消</a-button>
     </a-form-item>
   </a-form>
 </template>
@@ -62,8 +62,8 @@ export default defineComponent({
           trigger: 'blur',
         },
         {
-          pattern: global.number,
-          message: '数据键值为数值型',
+          pattern: global.number2,
+          message: '数据键值为0到100的正整数',
           trigger: 'blur',
         }
       ],
@@ -75,7 +75,7 @@ export default defineComponent({
         },
         {
           pattern: global.number,
-          message: '排序为数值型',
+          message: '排序为自然数',
           trigger: 'blur',
         }
       ],
@@ -101,10 +101,6 @@ export default defineComponent({
         });
     };
 
-    const resetForm = () => {
-      formRef.value.resetFields();
-    };
-
     return {
       //form表单
       formRef,
@@ -118,7 +114,6 @@ export default defineComponent({
       formState,
       rules,
       onSubmit,
-      resetForm,
     }
   }
 })

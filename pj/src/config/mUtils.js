@@ -25,3 +25,4 @@ Date.prototype.format = function(format) {
 
 
 export const number = /^[0-9]*$/; //数字值
+export const number2 = /^([0-9]{1,2}|100)$/; //0-100之间的正整数
