@@ -1,8 +1,8 @@
 <template>
   <div>
-    <a-input v-model:value="searchValue" class="search-input" placeholder="请输入字典名称查询">
+    <a-input v-model:value="searchValue" class="search-input" placeholder="请输入字典名称查询" @keyup.enter="searchTree(searchValue)">
       <template #suffix>
-        <svg class="icon svg-icon" aria-hidden="true" style="color:#ccc">
+        <svg class="icon svg-icon" aria-hidden="true" style="color:#ccc" @click="searchTree(searchValue)">
           <use xlink:href="#iconsearch"></use>
         </svg>
       </template>
@@ -12,14 +12,13 @@
     </svg>
   </div>
   <!-- expandedKeys指定展开数的节点  expand展开收起节点时触发  auto-expand-parent是否自动展开父节点 -->
-  <a-tree :tree-data="treeData" v-model:expandedKeys="expandedKeys">
+  <a-directory-tree :tree-data="treeData" v-model:expandedKeys="expandedKeys" v-if="!isSearch">
     <template #title="{ key: treeKey, title, sort,children}">
       <svg class="icon svg-icon" aria-hidden="true" style="margin-right:8px">
         <use xlink:href="#iconfolder"></use>
       </svg>
-      <span @mouseenter="getInfo(treeKey)">{{ title }}</span>
+      <span @mouseenter="iconShow(treeKey)" @click="iconHidden(treeKey)">{{ title }}</span>
       <a-dropdown :trigger="['hover']"  placement="bottomCenter">
-        <!-- :visible="true" -->
         <svg class="icon svg-icon" aria-hidden="true" style="margin-top:4px;float:right" v-if="isShow==treeKey" @mouseenter="onContent(treeKey,children)">
           <use xlink:href="#iconmore1"></use>
         </svg>  
@@ -28,20 +27,58 @@
         <template #overlay> 
           <!-- #overlay同v-slot一样-->
           <a-menu @click="({ key: menuKey }) => onContextMenuClick(treeKey, menuKey)">
+            <div class="ant-dropdown-arrow"></div>
             <a-menu-item key="1" @click="$emit('showModal')">添加机构</a-menu-item>
             <a-menu-item key="2" @click="stop()">停用</a-menu-item>
             <a-menu-item key="3" @click="useDic()">启用</a-menu-item>
             <a-menu-item key="3" :disabled="sort==1" @click="move(treeKey,title,'up')">上移</a-menu-item>
-            <a-menu-item key="3" :disabled="sort==sortLength">下移{{sortLength}}</a-menu-item>
+            <a-menu-item key="3" :disabled="sort==sortLength">下移</a-menu-item>
           </a-menu>
         </template>
       </a-dropdown>
     </template>
-  </a-tree>
+  </a-directory-tree>
+
+  <div class="tree-wrap" v-if="isSearch">
+    <div class="tree-search-wrap-box">
+      <p class="tree-search-wrap-title">一级</p>
+      <ul class="tree-search-wrap-content">
+        <li>
+          <svg class="icon svg-icon" aria-hidden="true" style="margin-right:8px">
+            <use xlink:href="#iconfolder"></use>
+          </svg>
+        </li>
+      </ul>
+    </div>
+    <div class="tree-search-wrap-box">
+      <p class="tree-search-wrap-title">二级</p>
+      <ul class="tree-search-wrap-content">
+        <li>
+          <svg class="icon svg-icon" aria-hidden="true" style="margin-right:8px">
+            <use xlink:href="#iconfolder"></use>
+          </svg>
+        </li>
+      </ul>
+    </div>
+    <div class="tree-search-wrap-box">
+      <p class="tree-search-wrap-title">三级</p>
+      <ul class="tree-search-wrap-content">
+        <li>
+          <svg class="icon svg-icon" aria-hidden="true" style="margin-right:8px">
+            <use xlink:href="#iconfolder"></use>
+          </svg>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- <div v-else class="not-data-img">
+    <img src="../assets/no-search.png" alt="">
+  </div> -->
 </template>
 
 <script>
-import { defineComponent, ref, watch,toRaw, reactive,createVNode} from 'vue';
+import { defineComponent, ref, watch,toRaw, reactive,createVNode, onMounted, onUpdated} from 'vue';
 import { ExclamationCircleOutlined,QuestionCircleOutlined} from '@ant-design/icons-vue';
 import { Modal } from 'ant-design-vue';
 
@@ -101,33 +138,6 @@ const treeData = [
           },
         ],
       },
-      {
-        title: '0-0-2',
-        key: '0-0-2',
-        sort: 3,
-        children: [
-          {
-            title: '0-0-2-0',
-            key: '0-0-2-0',
-            sort: 1,
-          },
-          {
-            title: '0-0-2-1',
-            key: '0-0-1-1',
-            sort: 2
-          },
-          {
-            title: '0-0-2-2',
-            key: '0-0-2-2',
-            sort: 3
-          },
-          {
-            title: '0-0-2-3',
-            key: '0-0-2-3',
-            sort: 4
-          },
-        ],
-      }
     ],
   }
 ];
@@ -143,6 +153,22 @@ export default defineComponent({
     watch(expandedKeys, () => {
       console.log('expandedKeys', expandedKeys);
     });
+
+    onMounted(()=>{
+      removeClass()
+    })
+
+    onUpdated(()=>{
+      removeClass()
+    })
+
+    const removeClass = ()=>{
+      let icon = document.getElementsByClassName('ant-tree-iconEle');
+      for(var i = 0;i<icon.length;i++){
+        icon[i].innerHTML = ''
+      }
+
+    }
 
     //停用
     const stop = ()=>{
@@ -227,10 +253,26 @@ export default defineComponent({
     }
 
     const isShow = ref(false);
-    const getInfo = (treeKey)=>{
+    const iconShow = (treeKey)=>{
       isShow.value = treeKey;
     }
- 
+    const iconHidden = (treeKey)=>{
+      isShow.value = !treeKey;
+    }
+
+
+    
+    const isSearch = ref(false);
+    //搜素
+    const searchTree = (searchValue)=>{
+      if(searchValue){
+        isSearch.value = true
+      }else {
+        isSearch.value = false
+      }
+    }
+
+
     //上移
     const move = (key,title,direction)=>{
   
@@ -247,8 +289,11 @@ export default defineComponent({
       move,
       onContent,
       sortLength,
-      getInfo,
-      isShow
+      iconShow,
+      isShow,
+      searchTree,
+      isSearch,
+      iconHidden
     }
   }
 })
@@ -257,5 +302,63 @@ export default defineComponent({
 <style lang="scss" scoped>
   .search-input {
     margin: 0 8px 8px 0;width: 226px;
+  }
+
+  .tree-search-wrap-box {
+    border-bottom: 1px solid #dcdcdc;
+    padding-bottom: .5em;
+  }
+
+  .tree-search-wrap-title {
+    color: #666;
+    margin: .5em 0;
+  }
+
+  .ant-tree.ant-tree-directory > li span.ant-tree-node-content-wrapper:hover::before, .ant-tree.ant-tree-directory .ant-tree-child-tree > li span.ant-tree-node-content-wrapper:hover::before {
+    background-color: #fffbe0;
+  }
+
+  //下拉弹窗尖角
+  .ant-dropdown-arrow, .ant-dropdown-placement-bottomLeft > .ant-dropdown-arrow, .ant-dropdown-placement-bottomRight > .ant-dropdown-arrow {
+    top: -3px;
+    left: 36px;
+    border-top-color: #fff;
+    border-right-color: transparent;
+    border-bottom-color: transparent;
+    border-left-color: #fff;
+    box-shadow: -2px -2px 5px rgb(0 0 0 / 6%);
+  }
+
+  .ant-dropdown-arrow {
+    position: absolute;
+    z-index: 1;
+    display: block;
+    // width: 8.48px;
+    // height: 8.48px;
+    background: transparent;
+    border-style: solid;
+    border-width: 4.24264069px;
+    transform: rotate(
+      45deg
+    );
+  }
+
+  .ant-dropdown .ant-dropdown-menu {
+    margin-top: 10px;
+  }
+
+  .not-data-img {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    img {
+      width:155px;
+      height:60px;  
+    } 
+  }
+  
+  .tree-search-wrap-content {
+    margin-bottom: 0%;
   }
 </style>
