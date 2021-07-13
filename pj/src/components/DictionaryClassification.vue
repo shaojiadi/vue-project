@@ -10,10 +10,22 @@
       <a-input v-model:value="formState.name" placeholder="请输入字典名称" :maxlength="30"/>
     </a-form-item>
     <a-form-item label="上级" name="region">
-      <a-select v-model:value="formState.region" placeholder="请选择">
-        <a-select-option value="shanghai">Zone one</a-select-option>
-        <a-select-option value="beijing">Zone two</a-select-option>
-      </a-select>
+      <a-tree-select
+        v-model:value="formState.region"
+        style="width: 100%"
+        :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
+        :tree-data="treeData"
+        placeholder="请选择"
+        tree-default-expand-all
+        treeIcon
+      >
+        <template #title="{ key, value }">
+          <svg class="icon svg-icon" aria-hidden="true" style="margin-right:8px">
+            <use xlink:href="#iconfolder"></use>
+          </svg>
+          <span>{{ value }}</span>
+        </template>
+      </a-tree-select>
     </a-form-item>
     <a-form-item label="字典类型"  name="date1">
       <a-input v-model:value="formState.date1" placeholder="请输入字典类型" :maxlength="30"/>  
@@ -40,11 +52,37 @@
 <script>
 import { defineComponent, ref, watch,toRaw, reactive} from 'vue';
 import { message } from 'ant-design-vue'
-
+const treeData = [
+  {
+    title: 'Node1',
+    value: '0-0',
+    key: '0-0',
+    children: [
+      {
+        value: '0-0-1',
+        key: '0-0-1',
+        slots: {
+          title: 'title',
+        },
+      },
+      {
+        value: '0-0-2',
+        key: '0-0-2',
+        slots: {
+          title: 'title',
+        },
+      },
+    ],
+  },
+  {
+    title: 'Node2',
+    value: '0-1',
+    key: '0-1',
+  },
+];
 export default defineComponent({
   props: ['isEdit'],
   setup(props,ctx){
-    console.log(props);
     //form表单
     const formRef = ref();
     const formState = reactive({
@@ -54,6 +92,13 @@ export default defineComponent({
       type: "1",
       applications: []
     });
+
+    const value = ref();
+    watch(value, () => {
+      console.log(value.value);
+    });
+
+
     const rules = {
       name: [
         {
@@ -119,6 +164,9 @@ export default defineComponent({
       formState,
       rules,
       onSubmit,
+
+      value,
+      treeData,
     }
   }
 })

@@ -14,12 +14,15 @@
   <!-- expandedKeys指定展开数的节点  expand展开收起节点时触发  auto-expand-parent是否自动展开父节点 -->
   <a-directory-tree :tree-data="treeData" v-model:expandedKeys="expandedKeys" v-if="!isSearch">
     <template #title="{ key: treeKey, title, sort,children}">
-      <svg class="icon svg-icon" aria-hidden="true" style="margin-right:8px">
-        <use xlink:href="#iconfolder"></use>
-      </svg>
-      <span @mouseenter="iconShow(treeKey)" @click="iconHidden(treeKey)">{{ title }}</span>
-      <a-dropdown :trigger="['hover']"  placement="bottomCenter">
-        <svg class="icon svg-icon" aria-hidden="true" style="margin-top:4px;float:right" v-if="isShow==treeKey" @mouseenter="onContent(treeKey,children)">
+      <div class="fictitious-wrap" @mouseenter="iconShow(treeKey)" @click="iconHidden(treeKey)" @mouseleave="iconHidden(treeKey)">
+        <svg class="icon svg-icon" aria-hidden="true" style="margin-right:8px">
+          <use xlink:href="#iconfolder"></use>
+        </svg>
+        <span>{{ title }}</span>
+      </div>
+     
+      <a-dropdown :trigger="['hover']"  placement="bottomCenter" @mouseenter="iconShow(treeKey)" @mouseleave="iconHidden(treeKey)">
+        <svg class="icon svg-icon" aria-hidden="true" style="margin-top:4px;position: absolute;right: 0;" v-if="isShow==treeKey" @mouseenter="onContent(treeKey,children)" >
           <use xlink:href="#iconmore1"></use>
         </svg>  
 
@@ -360,5 +363,14 @@ export default defineComponent({
   
   .tree-search-wrap-content {
     margin-bottom: 0%;
+  }
+
+  .fictitious-wrap {
+    // width: 60px;
+    // position: absolute;
+    // height: 24px;
+    // left: -60px;
+    // background: #f00;
+    flex:1;
   }
 </style>
