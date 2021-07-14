@@ -9,14 +9,15 @@
     <a-form-item ref="name" label="字典名称" name="name">
       <a-input v-model:value="formState.name" placeholder="请输入字典名称" :maxlength="30"/>
     </a-form-item>
-    <a-form-item label="上级" name="region">
+    <a-form-item label="上级" name="region" style="position:relative">
       <a-tree-select
         v-model:value="formState.region"
         style="width: 100%"
-        :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
+        :dropdown-style="{ maxHeight: '400px', overflow: 'auto',position:'absolute'}"
         :tree-data="treeData"
         placeholder="请选择"
         tree-default-expand-all
+        dropdownMatchSelectWidth
         treeIcon
       >
         <template #title="{ key, value }">
@@ -158,7 +159,7 @@ export default defineComponent({
         span: 4,
       },
       wrapperCol: {
-        span: 14,
+        span: 20,
       },
       other: '',
       formState,
@@ -172,6 +173,6 @@ export default defineComponent({
 })
 </script>
 
-<style>
-
+<style lang="scss">
+  
 </style>

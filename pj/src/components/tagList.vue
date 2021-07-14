@@ -75,8 +75,19 @@
     </div>
   </div>
 
+  <!-- 暂无搜索 -->
   <!-- <div v-else class="not-data-img">
     <img src="../assets/no-search.png" alt="">
+  </div> -->
+
+  <!-- 暂无数据 -->
+  <!-- <div class="no-data">
+    <div>
+      <svg class="icon svg-icon" aria-hidden="true" style="width:136px;height:92px">
+        <use xlink:href="#iconnone1"></use>
+      </svg>
+      <p>暂无数据</p>
+    </div>
   </div> -->
 </template>
 

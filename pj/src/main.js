@@ -5,6 +5,8 @@ import router from './router'
 import store from './store'
 import { Input, Table, message, Pagination,ConfigProvider,Tree,Modal,Form,Button,Select,Radio,Dropdown,Menu,TreeSelect   } from 'ant-design-vue';
 import 'ant-design-vue/dist/antd.css';
+import './config/mUtils'
+
 
 const components = [
   Input,
@@ -19,7 +21,7 @@ const components = [
   Radio,
   Dropdown,
   Menu,
-  TreeSelect 
+  TreeSelect,
 ]
 
 

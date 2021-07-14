@@ -23,11 +23,11 @@ module.exports = {
     port: 8000, // 端口号
     open: true, //编译完成时打开网页,
     // https: true,
-    // disableHostCheck: true, //跳过host检查host
+    // disableHostCheck: true, //跳过host检查
     proxy: {
         // 配置跨域
         '/api': {
-            target: "http://172.33.44.11:8081/rsdq",
+            target: "https://randomuser.me",
             ws:true,   //webscoket是否开启
             // secure:false, // 使用的是http协议则设置为false，https协议则设置为true
             changeOrigin:true,

@@ -58,7 +58,7 @@ axios.interceptors.response.use(function (res) {
   return Promise.reject(err)
 })
 
-const queryData = params => axios.get('https://randomuser.me/api', { params: params });
+const queryData = params => axios.get('/api', { params: params });
 
 // export default service
 export {
