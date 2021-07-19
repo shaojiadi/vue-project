@@ -19,6 +19,12 @@
         tree-default-expand-all
         dropdownMatchSelectWidth
         treeIcon
+        @click="getDom"
+        :getPopupContainer="
+          triggerNode => {
+            return triggerNode.parentNode || document.body;
+          }
+        "
       >
         <template #title="{ key, value }">
           <svg class="icon svg-icon" aria-hidden="true" style="margin-right:8px">
@@ -53,6 +59,8 @@
 <script>
 import { defineComponent, ref, watch,toRaw, reactive} from 'vue';
 import { message } from 'ant-design-vue'
+import { nextTick } from 'vue'
+
 const treeData = [
   {
     title: 'Node1',
@@ -152,6 +160,16 @@ export default defineComponent({
         });
     };
 
+
+    const getDom = async()=>{
+      // await nextTick(()=>{});
+      // let parent = document.getElementsByClassName('ant-select');
+      // let child = document.getElementsByClassName('ant-select-dropdown');
+      // if(child[0]){
+      //   parent[0].appendChild(child[0].parentNode.parentNode);
+      // }
+    }
+
     return {
       //form表单
       formRef,
@@ -168,8 +186,13 @@ export default defineComponent({
 
       value,
       treeData,
+      getDom
     }
-  }
+  },
+  mounted(){
+  },
+  methods: {
+  },
 })
 </script>
 

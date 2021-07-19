@@ -1,4 +1,5 @@
 const path = require('path')
+const { name } = require('./package');
 
 if(process.env.VUE_APP_MODE=="'development'"){
     //开发环境下的执行操作
@@ -9,6 +10,10 @@ if(process.env.VUE_APP_MODE=="'development'"){
 }else{
     //生产环境下的执行操作
     console.log(6666);
+}
+
+function resolve(dir) {
+    return path.join(__dirname, dir);
 }
    
 module.exports = {
@@ -22,8 +27,11 @@ module.exports = {
     host: "0.0.0.0",
     port: 8000, // 端口号
     open: true, //编译完成时打开网页,
+    headers: {
+        'Access-Control-Allow-Origin': '*',
+    },
     // https: true,
-    // disableHostCheck: true, //跳过host检查
+    disableHostCheck: true, //跳过host检查
     proxy: {
         // 配置跨域
         '/api': {
@@ -36,5 +44,18 @@ module.exports = {
             }
         }
     }
-}
+  },
+  configureWebpack: {
+    resolve: {
+      alias: {
+        '@': resolve('src'),
+      },
+    },
+    output: {
+      // 把子应用打包成 umd 库格式
+      library: `${name}-[name]`,
+      libraryTarget: 'umd',
+      jsonpFunction: `webpackJsonp_${name}`,
+    },
+  },
 } 
