@@ -125,6 +125,25 @@
     >
       <DictionaryClassification @closeDialog="visible=false" v-if="visible"  :isEdit="isEdit"/>
     </a-modal>
+
+    <!-- 删除弹窗 -->
+    <a-modal
+      v-model:visible="deleteDilog"
+      :confirm-loading="confirmLoading2"
+      class="dictionaries-modal"
+      :footer="null"
+      width="300px"
+      :centered="true"
+      wrapClassName="delete-dialog"   
+    >
+      <template #closeIcon>
+        <svg class="icon svg-icon" aria-hidden="true" style="width:10px;height:10px">
+          <use xlink:href="#icondeletex3"></use>
+        </svg>
+      </template>
+      <OperationPop :title="dialogTitle" :content="dialogContent" :icon="operationIcon" @closeDialog="deleteDilog=false"/>
+    </a-modal>
+
     <!-- 字典数据值 -->
     <a-modal
       :title="isEdit?'编辑字典数据值':'添加字典数据值'"
@@ -138,16 +157,11 @@
       <DictionaryValue @closeDialog="visibleDictionaryData=false" v-if="visibleDictionaryData" :isEdit="isEdit"/>
     </a-modal>
 
-
-
   </div>
 </template>
 <script>
 import { defineComponent, ref, watch,toRaw, reactive,createVNode} from 'vue';
 import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
-import DictionaryClassification from '@/components/DictionaryClassification.vue'
-import DictionaryValue from '@/components/DictionaryValue.vue'
-import TagList from '@/components/tagList.vue'
 import {queryData} from '../service/getData'
 import { Modal } from 'ant-design-vue';
 //列表
@@ -253,28 +267,10 @@ export default defineComponent({
       isEdit.value = true;
     }
 
+    const deleteDilog = ref(false);
+
     const deleteList = ()=>{
-      Modal.confirm({
-        title: '你确定要删除改字典数据吗?',
-        icon: createVNode(ExclamationCircleOutlined),
-        content: createVNode(
-          'div',
-          {
-            style: 'color:#666666;',
-          },
-          '删除操作不可逆，请谨慎操作！',
-        ),
-
-        onOk() {
-          console.log('OK');
-        },
-
-        onCancel() {
-          console.log('Cancel');
-        },
-
-        class: 'test',
-      });
+      deleteDilog.value = true;
     }
 
     //基础信息
@@ -388,13 +384,12 @@ export default defineComponent({
 
       //基础信息
       baseInfo,
-      data
+      data,
+
+      deleteDilog,
     };
   },
   components: {
-    DictionaryClassification,
-    DictionaryValue,
-    TagList
   },
   mounted() {
     // this.fetch();
@@ -403,6 +398,9 @@ export default defineComponent({
     return {
       loading: false,
       columns,
+      dialogTitle: '您确定要删除该字典数据吗？',
+      dialogContent: '删除操作不可逆，请谨慎操作！',
+      operationIcon: '#iconwaring_line'
     };
   },
   methods: {

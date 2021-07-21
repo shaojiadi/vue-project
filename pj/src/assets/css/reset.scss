@@ -3,6 +3,7 @@
   width: 100%;
   height: 100%;
   overflow: auto;
+
   .ant-table-thead > tr > th, .ant-table-tbody > tr > td {
     overflow-wrap: break-word;
     height: 32px;
@@ -11,35 +12,35 @@
     white-space: nowrap;
     padding: 0 10px;
   }
-  .ant-table-body {
-    /*定义了滚动条整体样式；*/ 
-    &::-webkit-scrollbar {
-      background: #fafafa;
-      box-shadow: 0px 1px 0px 0px #dcdcdc inset, 0px -1px 0px 0px #dcdcdc inset; 
-      height: 6px;
-      padding: 4px;
-    }
-    /*定义了轨道的样式*/ 
-    &::-webkit-scrollbar-track {
+  // .ant-table-body {
+  //   /*定义了滚动条整体样式；*/ 
+  //   &::-webkit-scrollbar {
+  //     background: #fafafa;
+  //     box-shadow: 0px 1px 0px 0px #dcdcdc inset, 0px -1px 0px 0px #dcdcdc inset; 
+  //     height: 6px;
+  //     padding: 4px;
+  //   }
+  //   /*定义了轨道的样式*/ 
+  //   &::-webkit-scrollbar-track {
       
-      // padding: 3px 4px;
-      // background-color:  #C1C1C1;
-      // height: 6px;
-      // -webkit-border-radius: 3px;
-      // -moz-border-radius: 3px;
-      // border-radius: 3px;
-    }
-    /*定义了滚动条滑块的样式*/
-    &::-webkit-scrollbar-thumb {
-      background-color:  #C1C1C1;
-      width: 365px !important;
-      margin: 3px 4px;
-      border-radius: 3px;
-      // border-style: dashed;
-      // border-width: 1.5px;
-      // background-clip: padding-box;
-    }
-  }
+  //     // padding: 3px 4px;
+  //     // background-color:  #C1C1C1;
+  //     // height: 6px;
+  //     // -webkit-border-radius: 3px;
+  //     // -moz-border-radius: 3px;
+  //     // border-radius: 3px;
+  //   }
+  //   /*定义了滚动条滑块的样式*/
+  //   &::-webkit-scrollbar-thumb {
+  //     background-color:  #C1C1C1;
+  //     width: 365px !important;
+  //     margin: 3px 4px;
+  //     border-radius: 3px;
+  //     // border-style: dashed;
+  //     // border-width: 1.5px;
+  //     // background-clip: padding-box;
+  //   }
+  // }
   .ant-table-thead > tr > th {
     background-color: #ecf6ff;
     .ant-table-column-title {
@@ -48,32 +49,42 @@
     }
   }
 
+  .ant-pagination-item a {
+    display: block;
+    color: #999;
+    transition: none;
+    font-size: 12px;
+  }
+
+  
+  .ant-pagination-item-active a {
+    color: #1890ff;
+  }
+
+  .ant-pagination-prev a,.ant-pagination-next a {
+    color: #999;
+  }
+
   .ant-table-pagination{
-    .ant-pagination-item a {
-      display: block;
-      color: #333;
-      transition: none;
-      font-size: 12px;
-    }
     .ant-pagination-prev,.ant-pagination-item, .ant-pagination-next {
       min-width: 24px;
       height: 24px;
       line-height: 24px;
     }
-    .ant-pagination-prev:hover .ant-pagination-item-link, .ant-pagination-prev:focus .ant-pagination-item-link,.ant-pagination-next:hover .ant-pagination-item-link,.ant-pagination-next:focus .ant-pagination-item-link{
-      font-weight: 500;
-      background: #fff;
-      border-color: #06AEA6;
-      color: #06AEA6;
-    }
-    .ant-pagination-item-active,.ant-pagination-item:hover {
-      font-weight: 500;
-      background: #fff;
-      border-color: #06AEA6;
-    }
-    .ant-pagination-item-active a,.ant-pagination-item:hover a,.ant-pagination-item-active:focus a, .ant-pagination-item-active:hover a {
-      color: #06AEA6;
-    }
+    // .ant-pagination-prev:hover .ant-pagination-item-link, .ant-pagination-prev:focus .ant-pagination-item-link,.ant-pagination-next:hover .ant-pagination-item-link,.ant-pagination-next:focus .ant-pagination-item-link{
+    //   font-weight: 500;
+    //   background: #fff;
+    //   border-color: #1890ff;
+    //   color: #1890ff;
+    // }
+    // .ant-pagination-item-active,.ant-pagination-item:hover {
+    //   font-weight: 500;
+    //   background: #fff;
+    //   border-color: #1890ff;
+    // }
+    // .ant-pagination-item-active a,.ant-pagination-item:hover a,.ant-pagination-item-active:focus a, .ant-pagination-item-active:hover a {
+    //   color: #1890ff;
+    // }
     .ant-select-single:not(.ant-select-customize-input) .ant-select-selector {
       width: 100%;
       height: 24px;
@@ -81,6 +92,7 @@
       .ant-select-selection-item {
         line-height: 22px;
         font-size: 12px;
+        color: #999;
       }
     }
     .ant-select-arrow {
@@ -92,6 +104,7 @@
     .ant-pagination-total-text {
       font-size: 12px;
       margin: 0 10px;
+      color: #999;
     }
     .ant-pagination-options {
       margin-left: 0;
@@ -111,44 +124,8 @@
   overflow: hidden;
 }
 
-
+// 树形图
 .left-box {
-  // .ant-tree {
-  //   // &>.ant-tree-treenode-selected>.ant-tree-switcher,&>li:hover>.ant-tree-switcher{
-  //   //   background-color: #fffbe0;
-  //   // }
-  //   // &>.ant-tree-treenode-selected>.ant-tree-node-content-wrapper,&>li:hover>.ant-tree-node-content-wrapper {
-  //   //   background-color: #fffbe0;
-  //   // }
-
-
-  //   // &>.ant-tree-treenode-switcher-open>.ant-tree-child-tree-open>.ant-tree-treenode-selected>.ant-tree-switcher {
-  //   //   background-color: #fffbe0;
-  //   // }
-  //   // &>.ant-tree-treenode-switcher-open>.ant-tree-child-tree-open>li:hover>.ant-tree-switcher {
-  //   //   background-color: #fffbe0;
-  //   // }
-  //   // &>.ant-tree-treenode-switcher-open>.ant-tree-child-tree-open>.ant-tree-treenode-selected>.ant-tree-node-selected {
-  //   //   background-color: #fffbe0;
-  //   // }
-  //   // &>.ant-tree-treenode-switcher-open>.ant-tree-child-tree-open>li:hover>.ant-tree-node-content-wrapper {
-  //   //   background-color: #fffbe0;
-  //   // }
-
-
-  //   // &>.ant-tree-treenode-switcher-open>.ant-tree-child-tree-open>.ant-tree-treenode-switcher-open>.ant-tree-child-tree-open>.ant-tree-treenode-selected>.ant-tree-switcher{
-  //   //   background-color: #fffbe0;
-  //   // }
-  //   // &>.ant-tree-treenode-switcher-open>.ant-tree-child-tree-open>.ant-tree-treenode-switcher-open>.ant-tree-child-tree-open>li:hover>.ant-tree-switcher{
-  //   //   background-color: #fffbe0;
-  //   // }
-  //   // &>.ant-tree-treenode-switcher-open>.ant-tree-child-tree-open>.ant-tree-treenode-switcher-open>.ant-tree-child-tree-open>.ant-tree-treenode-selected>.ant-tree-node-selected{
-  //   //   background-color: #fffbe0;
-  //   // }
-  //   // &>.ant-tree-treenode-switcher-open>.ant-tree-child-tree-open>.ant-tree-treenode-switcher-open>.ant-tree-child-tree-open>li:hover>.ant-tree-node-content-wrapper{
-  //   //   background-color: #fffbe0;
-  //   // }
-  // }
   .ant-tree.ant-tree-directory > li.ant-tree-treenode-selected > span.ant-tree-node-content-wrapper::before, .ant-tree.ant-tree-directory .ant-tree-child-tree > li.ant-tree-treenode-selected > span.ant-tree-node-content-wrapper::before {
     background-color: #fffbe0;
   }
@@ -215,3 +192,40 @@
     text-align: center;
   }
 }
+
+
+//小弹窗
+.ant-modal-body {
+  .ant-modal-confirm-body {
+    .ant-modal-confirm-title {
+      font-size: 14px;
+      font-weight: 500;
+      color: #333333;
+    }
+    .ant-modal-confirm-content {
+      margin-top: 10px;
+      font-weight: 400;
+      font-size: 12px;
+    }
+  }
+  & .ant-modal-confirm-body-wrapper .ant-modal-confirm-btns {
+    float: left;
+    margin-left: 38px;
+    margin-top: 18px;
+    .ant-btn {
+      width: 90px;
+      height: 26px;
+    }
+  }
+}
+
+// .ant-modal-close {
+//   .ant-modal-close-x {
+//     color: rgb(144,144,144);
+//   }
+// }
+
+.delete-dialog {
+  color: #f00;
+}
+

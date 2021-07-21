@@ -12,6 +12,8 @@ import store from './store'
 import { Input, Table, message, Pagination,ConfigProvider,Tree,Modal,Form,Button,Select,Radio,Dropdown,Menu,TreeSelect   } from 'ant-design-vue';
 import 'ant-design-vue/dist/antd.css';
 import './config/mUtils'
+import component from './components/'
+
 let instance = null;
 
 const components = [
@@ -50,6 +52,10 @@ function render(props = {}) {
   components.forEach(component => {
     instance.use(component)
   })
+  Object.keys(component).forEach((key) => {
+    console.log(key,component,999);
+    instance.component(key,component[key])
+  });
   instance.use(store).use(router);
   instance.mount(container ? container.querySelector("#app") : "#app");
 }

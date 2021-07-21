@@ -15,7 +15,7 @@
   </div>
 </template>
 <script>
-import {defineComponent,reactive, ref,toRefs,onMounted,watch} from 'vue'
+import {defineComponent,reactive, ref,toRefs,onMounted,watch,nextTick} from 'vue'
 import {queryData} from '../service/getData'
 
 
@@ -163,9 +163,19 @@ export default defineComponent({
       });
     },
   },
-  updated(){
+  async updated(){
     var div = document.querySelector('.ant-pagination-total-text');
     var div2 = document.querySelector('.ant-pagination-options');
+    var icon = document.querySelector('.ant-select-suffix');
+    // await nextTick(()=>{});
+    if(icon){
+       icon.innerHTML = `
+        <svg class="icon svg-icon" aria-hidden="true" style="width:11px;height:13px">
+          <use xlink:href="#icondrop_down"></use>
+        </svg>
+      `
+    }
+   
     if(div&&div2){
       let div3 = div.cloneNode(true);
       div.parentNode.insertBefore(div3,div2);

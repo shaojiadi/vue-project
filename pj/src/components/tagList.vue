@@ -14,7 +14,7 @@
   <!-- expandedKeys指定展开数的节点  expand展开收起节点时触发  auto-expand-parent是否自动展开父节点 -->
   <a-directory-tree :tree-data="treeData" v-model:expandedKeys="expandedKeys" v-if="!isSearch">
     <template #title="{ key: treeKey, title, sort,children}">
-      <div class="fictitious-wrap" @mouseenter="iconShow(treeKey)" @click="iconHidden(treeKey)" @mouseleave="iconHidden(treeKey)">
+      <div class="fictitious-wrap" @mouseenter="iconShow(treeKey)" @mouseleave="iconHidden(treeKey)">
         <svg class="icon svg-icon" aria-hidden="true" style="margin-right:8px">
           <use xlink:href="#iconfolder"></use>
         </svg>
@@ -89,6 +89,23 @@
       <p>暂无数据</p>
     </div>
   </div> -->
+
+  <a-modal
+    v-model:visible="isOpenDialog"
+    :confirm-loading="confirmLoading2"
+    class="dictionaries-modal"
+    :footer="null"
+    width="300px"
+    :centered="true"
+    wrapClassName="delete-dialog"   
+  >
+    <template #closeIcon>
+      <svg class="icon svg-icon" aria-hidden="true" style="width:10px;height:10px">
+        <use xlink:href="#icondeletex3"></use>
+      </svg>
+    </template>
+    <OperationPop :title="dialogTitle" :content="dialogContent" :icon="operationIcon" @closeDialog="isOpenDialog=false" @errorInfo="errorInfo()" v-if="isOpenDialog"/>
+  </a-modal>
 </template>
 
 <script>
@@ -184,56 +201,35 @@ export default defineComponent({
 
     }
 
+    const dialogTitle = ref('');
+    const dialogContent = ref('');
+    const operationIcon = ref('');
+    const isOpenDialog = ref(false);
+     
     //停用
     const stop = ()=>{
-      Modal.confirm({
-        title: '您确定要停用该字典吗？',
-        icon: createVNode(ExclamationCircleOutlined),
-        content: createVNode(
-          'div',
-          {
-            style: 'color:#666666;',
-          },
-          '停用后，该字典将无法使用，请谨慎操作！',
-        ),
-
-        onOk() {
-          console.log('OK');
-        },
-
-        onCancel() {
-          console.log('Cancel');
-        },
-
-        class: 'test',
-      });
+      dialogTitle.value = "您确定要停用该字典分类吗？";
+      dialogContent.value = "停用后，该字典分类将无法正常使用！";
+      operationIcon.value = "#iconwaring_line";
+      isOpenDialog.value = true;
     }
 
     //启用
     const useDic = ()=>{
-      Modal.confirm({
-        title: '您确定要启用该字典吗？',
-        icon: createVNode(QuestionCircleOutlined),
-        content: createVNode(
-          'div',
-          {
-            style: 'color:#666666;',
-          },
-          '启用后，该字典将允许重新被使用！',
-        ),
-
-        onOk() {
-          console.log('OK');
-        },
-
-        onCancel() {
-          console.log('Cancel');
-        },
-
-        class: 'test',
-      });
+      dialogTitle.value = "您确定要启用该字典吗？";
+      dialogContent.value = "启用后，该字典将允许重新被使用！";
+      operationIcon.value = "#iconquestion_line";
+      isOpenDialog.value = true;
     }
 
+    //停用失败
+    const errorInfo = ()=>{
+      isOpenDialog.value = false;
+      dialogTitle.value = "停用失败！";
+      dialogContent.value = "该机构下有子字典在使用，无法停用！";
+      operationIcon.value = "#iconwrong_line";
+      isOpenDialog.value = true;
+    }
 
     //初始化
     const sortLength = ref(1);
@@ -268,9 +264,11 @@ export default defineComponent({
 
     const isShow = ref(false);
     const iconShow = (treeKey)=>{
+      // alert(treeKey)
       isShow.value = treeKey;
     }
     const iconHidden = (treeKey)=>{
+      console.log(treeKey,77);
       isShow.value = !treeKey;
     }
 
@@ -307,7 +305,12 @@ export default defineComponent({
       isShow,
       searchTree,
       isSearch,
-      iconHidden
+      iconHidden,
+      dialogTitle,
+      dialogContent,
+      operationIcon,
+      isOpenDialog,
+      errorInfo
     }
   }
 })
