@@ -195,37 +195,45 @@
 
 
 //小弹窗
-.ant-modal-body {
-  .ant-modal-confirm-body {
-    .ant-modal-confirm-title {
-      font-size: 14px;
-      font-weight: 500;
-      color: #333333;
-    }
-    .ant-modal-confirm-content {
-      margin-top: 10px;
-      font-weight: 400;
-      font-size: 12px;
-    }
-  }
-  & .ant-modal-confirm-body-wrapper .ant-modal-confirm-btns {
-    float: left;
-    margin-left: 38px;
-    margin-top: 18px;
-    .ant-btn {
-      width: 90px;
-      height: 26px;
-    }
-  }
-}
-
-// .ant-modal-close {
-//   .ant-modal-close-x {
-//     color: rgb(144,144,144);
+// .ant-modal-body {
+//   .ant-modal-confirm-body {
+//     .ant-modal-confirm-title {
+//       font-size: 14px;
+//       font-weight: 500;
+//       color: #333333;
+//     }
+//     .ant-modal-confirm-content {
+//       margin-top: 10px;
+//       font-weight: 400;
+//       font-size: 12px;
+//     }
+//   }
+//   & .ant-modal-confirm-body-wrapper .ant-modal-confirm-btns {
+//     float: left;
+//     margin-left: 38px;
+//     margin-top: 18px;
+//     .ant-btn {
+//       width: 90px;
+//       height: 26px;
+//     }
 //   }
 // }
 
-.delete-dialog {
-  color: #f00;
+// // .ant-modal-close {
+// //   .ant-modal-close-x {
+// //     color: rgb(144,144,144);
+// //   }
+// // }
+
+// .delete-dialog {
+//   color: #f00;
+// }
+
+.new-ant-tree-node::before {
+  background-color: #fffbe0;
 }
+
+
+
+
 

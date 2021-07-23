@@ -1,5 +1,5 @@
 <template>
-  <div id="nav">
+  <div id="nav" data-name="pf-log">
     <!-- <router-link to="/">Home</router-link> |
     <router-link to="/about">About</router-link> -->
     <a-config-provider :locale="locale">

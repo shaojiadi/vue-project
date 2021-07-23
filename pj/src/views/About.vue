@@ -1,5 +1,5 @@
 <template>
-  <div class="box-wrap flex-box">
+  <div class="box-wrap flex-box" ref="box" >
     <div class="left-box">
       <TagList @showModal="showModal"/>
     </div>
@@ -47,7 +47,10 @@
             </li>
             <li class="flex-box menu-manage-detail-li">
               <p class="menu-manage-detail-name">是否停用:</p>
-              <p :class="baseInfo.isStop?'stop-class':'nostop-class'">{{baseInfo.isStop?'是':'否'}}</p>
+              <svg class="icon svg-icon" aria-hidden="true" style="width:16px;height:16px;margin-top:2px">
+                <use xlink:href="#iconshi-hong"  v-if="baseInfo.isStop"></use>
+                <use xlink:href="#iconfou-hui"  v-else></use>
+              </svg>
             </li>
             <li class="flex-box" style="width:100%">
               <p class="menu-manage-detail-name">字典属性:</p>
@@ -122,6 +125,7 @@
       class="dictionaries-modal"
       :footer="null"
       width="560px"
+      :getContainer="$refs.box"  
     >
       <DictionaryClassification @closeDialog="visible=false" v-if="visible"  :isEdit="isEdit"/>
     </a-modal>
@@ -134,7 +138,8 @@
       :footer="null"
       width="300px"
       :centered="true"
-      wrapClassName="delete-dialog"   
+      wrapClassName="delete-dialog" 
+      :getContainer="$refs.box"  
     >
       <template #closeIcon>
         <svg class="icon svg-icon" aria-hidden="true" style="width:10px;height:10px">
@@ -153,6 +158,7 @@
       class="dictionaries-modal"
       :footer="null"
       width="560px"
+      :getContainer="$refs.box"  
     >
       <DictionaryValue @closeDialog="visibleDictionaryData=false" v-if="visibleDictionaryData" :isEdit="isEdit"/>
     </a-modal>
@@ -516,18 +522,6 @@ export default defineComponent({
 
   .role-group-gray {
     background: #DCDCDC;
-  }
-
-  .nostop-class {
-    background-color: #C1C1C1;
-    color: #fff;
-    padding: 0 2px;
-  }
-
-  .stop-class {
-    background-color: rgb(74,207,177);
-    color: #fff;
-    padding: 0 2px;
   }
 </style>
 

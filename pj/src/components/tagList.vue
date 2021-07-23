@@ -12,33 +12,32 @@
     </svg>
   </div>
   <!-- expandedKeys指定展开数的节点  expand展开收起节点时触发  auto-expand-parent是否自动展开父节点 -->
-  <a-directory-tree :tree-data="treeData" v-model:expandedKeys="expandedKeys" v-if="!isSearch">
+  <a-directory-tree :tree-data="treeData" v-model:expandedKeys="expandedKeys" v-if="!isSearch"  >
     <template #title="{ key: treeKey, title, sort,children}">
       <div class="fictitious-wrap" @mouseenter="iconShow(treeKey)" @mouseleave="iconHidden(treeKey)">
         <svg class="icon svg-icon" aria-hidden="true" style="margin-right:8px">
           <use xlink:href="#iconfolder"></use>
         </svg>
-        <span>{{ title }}</span>
-      </div>
-     
-      <a-dropdown :trigger="['hover']"  placement="bottomCenter" @mouseenter="iconShow(treeKey)" @mouseleave="iconHidden(treeKey)">
-        <svg class="icon svg-icon" aria-hidden="true" style="margin-top:4px;position: absolute;right: 0;" v-if="isShow==treeKey" @mouseenter="onContent(treeKey,children)" >
-          <use xlink:href="#iconmore1"></use>
-        </svg>  
+        <span class="d1">{{ title }}</span>
+        <a-dropdown :trigger="['hover']"  placement="bottomRight"
+        >
+          <svg class="icon svg-icon" aria-hidden="true" style="margin-top:4px;position: absolute;right: 0;" v-if="isShow==treeKey" @mouseenter="onContent(treeKey,children)" >
+            <use xlink:href="#iconmore1"></use>
+          </svg>  
 
-       
-        <template #overlay> 
-          <!-- #overlay同v-slot一样-->
-          <a-menu @click="({ key: menuKey }) => onContextMenuClick(treeKey, menuKey)">
-            <div class="ant-dropdown-arrow"></div>
-            <a-menu-item key="1" @click="$emit('showModal')">添加机构</a-menu-item>
-            <a-menu-item key="2" @click="stop()">停用</a-menu-item>
-            <a-menu-item key="3" @click="useDic()">启用</a-menu-item>
-            <a-menu-item key="3" :disabled="sort==1" @click="move(treeKey,title,'up')">上移</a-menu-item>
-            <a-menu-item key="3" :disabled="sort==sortLength">下移</a-menu-item>
-          </a-menu>
-        </template>
-      </a-dropdown>
+        
+          <template #overlay> 
+            <a-menu @click="({ key: menuKey }) => onContextMenuClick(treeKey, menuKey)"  @mouseenter="iconShow(treeKey)"  @mouseleave="iconHidden(treeKey)">
+              <div class="ant-dropdown-arrow"></div>
+              <a-menu-item key="1" @click="$emit('showModal')">添加机构</a-menu-item>
+              <a-menu-item key="2" @click="stop()">停用</a-menu-item>
+              <a-menu-item key="3" @click="useDic()">启用</a-menu-item>
+              <a-menu-item key="3" :disabled="sort==1" @click="move(treeKey,title,'up')">上移</a-menu-item>
+              <a-menu-item key="3" :disabled="sort==sortLength">下移</a-menu-item>
+            </a-menu>
+          </template>
+        </a-dropdown>
+      </div>
     </template>
   </a-directory-tree>
 
@@ -109,9 +108,10 @@
 </template>
 
 <script>
-import { defineComponent, ref, watch,toRaw, reactive,createVNode, onMounted, onUpdated} from 'vue';
+import { defineComponent, ref, watch,toRaw, reactive,createVNode, onMounted, onUpdated, nextTick} from 'vue';
 import { ExclamationCircleOutlined,QuestionCircleOutlined} from '@ant-design/icons-vue';
 import { Modal } from 'ant-design-vue';
+import {getPopupNode} from '../config/mUtils'
 
 // 树形图
 const treeData = [
@@ -194,7 +194,7 @@ export default defineComponent({
     })
 
     const removeClass = ()=>{
-      let icon = document.getElementsByClassName('ant-tree-iconEle');
+      let icon = getPopupNode('.ant-tree-iconEle');
       for(var i = 0;i<icon.length;i++){
         icon[i].innerHTML = ''
       }
@@ -233,11 +233,20 @@ export default defineComponent({
 
     //初始化
     const sortLength = ref(1);
-    const onContent = (treeKey,children)=>{
+    const onContent = async(treeKey,children)=>{
+      // let div = document.getElementsByClassName('ant-dropdown');
+      // await nextTick(()=>{})
+      // if(div){
+      //  for(var i =0;i<div.length;i++){
+      //    let content = div[i];
+      //    console.log(content);
+      //  }
+      // }
+
+
       let arr = treeData.filter(item=>{
         return item.key == treeKey
       })
-
       if(arr.length){
         sortLength.value = treeData.length;
       }else {
@@ -264,12 +273,23 @@ export default defineComponent({
 
     const isShow = ref(false);
     const iconShow = (treeKey)=>{
-      // alert(treeKey)
       isShow.value = treeKey;
+      let d = document.getElementsByClassName('d1');
+      for(var i = 0;i<d.length;i++){
+        if(d[i].innerHTML==treeKey){
+          d[i].parentNode.parentNode.parentNode.classList.add("new-ant-tree-node");
+          console.log(d[i].parentNode.parentNode.parentNode);
+        }
+      }
     }
     const iconHidden = (treeKey)=>{
-      console.log(treeKey,77);
       isShow.value = !treeKey;
+      let d = document.getElementsByClassName('d1');
+      for(var i = 0;i<d.length;i++){
+        if(d[i].innerHTML==treeKey){
+          d[i].parentNode.parentNode.parentNode.classList.remove("new-ant-tree-node");
+        }
+      }
     }
 
 

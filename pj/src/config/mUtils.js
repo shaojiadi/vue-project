@@ -26,3 +26,14 @@ Date.prototype.format = function(format) {
 
 export const number = /^[0-9]*$/; //数字值
 export const number2 = /^([0-9]{1,2}|100)$/; //0-100之间的正整数
+
+
+//返回dom节点
+export const getPopupNode = (name = '#root') => {
+  const box = document.querySelector("[data-name=pf-log]")
+  if(!box){
+    return document.body.querySelectorAll(name);
+  }
+  const shadowRoot = box.shadowRoot;
+  return shadowRoot.querySelectorAll(name);
+}
