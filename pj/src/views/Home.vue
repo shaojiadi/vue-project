@@ -37,6 +37,9 @@ export default {
 
 <style scoped lang="scss">
   .box-wrap {
+    width: 100%;
+    height: 100%;
+    padding: 14px;
     .icon {
       width: 16px;
       height: 16px;

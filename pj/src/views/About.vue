@@ -90,7 +90,6 @@
             :data-source="data"
             :pagination="false"
             :loading="loading"
-            @change="handleTableChange"
             :row-key="record => record.id"
             bordered
             class="main-table"
@@ -410,31 +409,6 @@ export default defineComponent({
     };
   },
   methods: {
-    // handleTableChange(pagination, filters, sorter) {
-    //   const pager = { ...this.pagination };
-    //   pager.current = pagination.current;
-    //   this.pagination = pager;
-    //   this.fetch({
-    //     results: pagination.pageSize,
-    //     page: pagination.current,
-    //     sortField: sorter.field,
-    //     sortOrder: sorter.order,
-    //     ...filters,
-    //   });
-    // },
-    // fetch(params = {}) {
-    //   this.loading = true;
-    //   queryData({
-    //     results: 10,
-    //     ...params,
-    //   }).then(({ data }) => {
-    //     const pagination = { ...this.pagination };
-    //     pagination.total = 200;
-    //     this.loading = false;
-    //     this.data = data.results;
-    //     this.pagination = pagination;
-    //   });
-    // },
   }
 });
 </script>
@@ -445,7 +419,6 @@ export default defineComponent({
     width: 280px;
     height: 100%;
     border-right: 1px solid #cccccc;
-    padding: 14px;
   }
 
   .right-box {
@@ -453,10 +426,9 @@ export default defineComponent({
     padding-left: 14px;
     height: 100%;
     .page-head {
-      height: 40px;
       width: 100%;
       border-bottom: 1px solid #ccc;
-      line-height: 40px;
+      padding-bottom: 11px;
     }
   }
 

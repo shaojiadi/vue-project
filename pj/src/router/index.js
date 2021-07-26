@@ -1,11 +1,11 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHistory, createMemoryHistory } from 'vue-router'
 import Home from '../views/Home.vue'
 
 const routes = [
   {
     path: '/',
     name: 'Home',
-    component: Home
+    component: Home,
   },
   {
     path: '/about',
@@ -19,8 +19,10 @@ const routes = [
 
 const router = createRouter({
   // history: createWebHistory(process.env.BASE_URL),  //默认
-  history: createWebHistory(window.__POWERED_BY_QIANKUN__ ? "/vue3" : "/"),
+  history: createWebHistory(window.location.pathname),  //默认
+  // history: createMemoryHistory(window.__POWERED_BY_QIANKUN__ ? "/" : "/"),
   routes
 })
+
 
 export default router

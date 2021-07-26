@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="search-wrap">
     <a-input v-model:value="searchValue" class="search-input" placeholder="请输入字典名称查询" @keyup.enter="searchTree(searchValue)">
       <template #suffix>
         <svg class="icon svg-icon" aria-hidden="true" style="color:#ccc" @click="searchTree(searchValue)">
@@ -7,19 +7,25 @@
         </svg>
       </template>
     </a-input>
-    <svg class="icon svg-icon" aria-hidden="true" @click="$emit('showModal')">
+    <svg class="icon svg-icon" aria-hidden="true" @click="$emit('showModal')" style="width:14px;height:14px">
       <use xlink:href="#iconadd"></use>
     </svg>
   </div>
   <!-- expandedKeys指定展开数的节点  expand展开收起节点时触发  auto-expand-parent是否自动展开父节点 -->
-  <a-directory-tree :tree-data="treeData" v-model:expandedKeys="expandedKeys" v-if="!isSearch"  >
+  <a-directory-tree :tree-data="treeData" v-model:expandedKeys="expandedKeys" v-if="!isSearch" style="margin-left:8px">
     <template #title="{ key: treeKey, title, sort,children}">
       <div class="fictitious-wrap" @mouseenter="iconShow(treeKey)" @mouseleave="iconHidden(treeKey)">
         <svg class="icon svg-icon" aria-hidden="true" style="margin-right:8px">
           <use xlink:href="#iconfolder"></use>
         </svg>
         <span class="d1">{{ title }}</span>
-        <a-dropdown :trigger="['hover']"  placement="bottomRight"
+
+        <a-dropdown :trigger="['hover']"  placement="bottomRight" 
+        :getPopupContainer="
+          triggerNode => {
+            return getParentNode;
+          }
+        "
         >
           <svg class="icon svg-icon" aria-hidden="true" style="margin-top:4px;position: absolute;right: 0;" v-if="isShow==treeKey" @mouseenter="onContent(treeKey,children)" >
             <use xlink:href="#iconmore1"></use>
@@ -27,7 +33,7 @@
 
         
           <template #overlay> 
-            <a-menu @click="({ key: menuKey }) => onContextMenuClick(treeKey, menuKey)"  @mouseenter="iconShow(treeKey)"  @mouseleave="iconHidden(treeKey)">
+            <a-menu @click="({ key: menuKey }) => onContextMenuClick(treeKey, menuKey)" @mouseenter="iconShow(treeKey)"  @mouseleave="iconHidden(treeKey)">
               <div class="ant-dropdown-arrow"></div>
               <a-menu-item key="1" @click="$emit('showModal')">添加机构</a-menu-item>
               <a-menu-item key="2" @click="stop()">停用</a-menu-item>
@@ -274,17 +280,16 @@ export default defineComponent({
     const isShow = ref(false);
     const iconShow = (treeKey)=>{
       isShow.value = treeKey;
-      let d = document.getElementsByClassName('d1');
+      let d = getPopupNode('.d1');
       for(var i = 0;i<d.length;i++){
         if(d[i].innerHTML==treeKey){
           d[i].parentNode.parentNode.parentNode.classList.add("new-ant-tree-node");
-          console.log(d[i].parentNode.parentNode.parentNode);
         }
       }
     }
     const iconHidden = (treeKey)=>{
       isShow.value = !treeKey;
-      let d = document.getElementsByClassName('d1');
+      let d = getPopupNode('.d1');
       for(var i = 0;i<d.length;i++){
         if(d[i].innerHTML==treeKey){
           d[i].parentNode.parentNode.parentNode.classList.remove("new-ant-tree-node");
@@ -310,6 +315,8 @@ export default defineComponent({
   
     }
 
+    const confirmLoading2 = ref(false);
+
     return {
       // 树形图
       searchValue,
@@ -330,15 +337,28 @@ export default defineComponent({
       dialogContent,
       operationIcon,
       isOpenDialog,
-      errorInfo
+      errorInfo,
+      confirmLoading2
+    }
+  },
+  computed: {
+    getParentNode(){
+      return document.querySelector("[data-name=pf-log]")?document.querySelector("[data-name=pf-log]").shadowRoot:document.body
     }
   }
 })
 </script>
 
 <style lang="scss" scoped>
+  .search-wrap {
+    display: flex;
+    padding: 14px;
+    width: 100%;
+    align-items: center;
+  }
   .search-input {
-    margin: 0 8px 8px 0;width: 226px;
+    margin-right: 10px;
+    width: 226px;
   }
 
   .tree-search-wrap-box {
@@ -400,11 +420,8 @@ export default defineComponent({
   }
 
   .fictitious-wrap {
-    // width: 60px;
-    // position: absolute;
-    // height: 24px;
-    // left: -60px;
-    // background: #f00;
     flex:1;
   }
+
+
 </style>

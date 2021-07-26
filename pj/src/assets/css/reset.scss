@@ -167,7 +167,7 @@
   .ant-modal-header {
     padding: 0 24px;
     height: 38px;
-    background-color: #198EEB;
+    background-color: #198EEB;  
     .ant-modal-title {
       line-height: 38px;
       color: #fff;
@@ -234,6 +234,8 @@
 }
 
 
-
-
-
+.ant-dropdown {
+  .ant-dropdown-menu-item-active:hover,.ant-dropdown-menu-submenu-title:hover {
+    background-color: #fffbe0;
+  }
+}
