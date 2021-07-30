@@ -1,4 +1,5 @@
 <template>
+<div ref="box">
   <div class="search-wrap">
     <a-input v-model:value="searchValue" class="search-input" placeholder="请输入字典名称查询" @keyup.enter="searchTree(searchValue)">
       <template #suffix>
@@ -12,40 +13,43 @@
     </svg>
   </div>
   <!-- expandedKeys指定展开数的节点  expand展开收起节点时触发  auto-expand-parent是否自动展开父节点 -->
-  <a-directory-tree :tree-data="treeData" v-model:expandedKeys="expandedKeys" v-if="!isSearch" style="margin-left:8px">
+  <a-tree :tree-data="treeData" v-model:expandedKeys="expandedKeys" v-if="!isSearch" style="margin-left:8px" @mouseenter="showData($event)">
     <template #title="{ key: treeKey, title, sort,children}">
-      <div class="fictitious-wrap" @mouseenter="iconShow(treeKey)" @mouseleave="iconHidden(treeKey)">
-        <svg class="icon svg-icon" aria-hidden="true" style="margin-right:8px">
-          <use xlink:href="#iconfolder"></use>
-        </svg>
-        <span class="d1">{{ title }}</span>
+      <div  @mouseenter="iconShow(treeKey)" @mouseleave="iconHidden(treeKey)" class="tree-content">
+        <div class="virtual-div"></div>
+        <div class="fictitious-wrap">
+          <svg class="icon svg-icon" aria-hidden="true" style="margin-right:8px">
+            <use xlink:href="#iconfolder"></use>
+          </svg>
+          <span class="d1">{{ title }}
+            <a-dropdown  placement="bottomRight" 
+            :getPopupContainer="
+              triggerNode => {
+                return triggerNode.parentNode;
+              }
+            "
+            >
+              <svg class="icon svg-icon" aria-hidden="true" style="margin-top:4px;float:right;" v-show="isShow==treeKey" @mouseenter="onContent(treeKey,children)" >
+                <use xlink:href="#iconmore1"></use>
+              </svg>  
 
-        <a-dropdown :trigger="['hover']"  placement="bottomRight" 
-        :getPopupContainer="
-          triggerNode => {
-            return getParentNode;
-          }
-        "
-        >
-          <svg class="icon svg-icon" aria-hidden="true" style="margin-top:4px;position: absolute;right: 0;" v-if="isShow==treeKey" @mouseenter="onContent(treeKey,children)" >
-            <use xlink:href="#iconmore1"></use>
-          </svg>  
-
-        
-          <template #overlay> 
-            <a-menu @click="({ key: menuKey }) => onContextMenuClick(treeKey, menuKey)" @mouseenter="iconShow(treeKey)"  @mouseleave="iconHidden(treeKey)">
-              <div class="ant-dropdown-arrow"></div>
-              <a-menu-item key="1" @click="$emit('showModal')">添加机构</a-menu-item>
-              <a-menu-item key="2" @click="stop()">停用</a-menu-item>
-              <a-menu-item key="3" @click="useDic()">启用</a-menu-item>
-              <a-menu-item key="3" :disabled="sort==1" @click="move(treeKey,title,'up')">上移</a-menu-item>
-              <a-menu-item key="3" :disabled="sort==sortLength">下移</a-menu-item>
-            </a-menu>
-          </template>
-        </a-dropdown>
+              <template #overlay> 
+                <a-menu @click="({ key: menuKey }) => onContextMenuClick(treeKey, menuKey)" @mouseenter="iconShow(treeKey)"  @mouseleave="iconHidden(treeKey)" style="padding:18px 0;width:100px">
+                  <div class="ant-dropdown-arrow"></div>
+                  <a-menu-item key="1" @click="$emit('showModal')">添加机构</a-menu-item>
+                  <a-menu-item key="2" @click="stop()">停用</a-menu-item>
+                  <a-menu-item key="3" @click="useDic()">启用</a-menu-item>
+                  <a-menu-item key="3" :disabled="sort==1" @click="move(treeKey,title,'up')">上移</a-menu-item>
+                  <a-menu-item key="3" :disabled="sort==sortLength">下移</a-menu-item>
+                </a-menu>
+              </template>
+            </a-dropdown>
+          </span>
+        </div>
       </div>
+    
     </template>
-  </a-directory-tree>
+  </a-tree>
 
   <div class="tree-wrap" v-if="isSearch">
     <div class="tree-search-wrap-box">
@@ -103,6 +107,7 @@
     width="300px"
     :centered="true"
     wrapClassName="delete-dialog"   
+    :getContainer="$refs.box"
   >
     <template #closeIcon>
       <svg class="icon svg-icon" aria-hidden="true" style="width:10px;height:10px">
@@ -111,6 +116,7 @@
     </template>
     <OperationPop :title="dialogTitle" :content="dialogContent" :icon="operationIcon" @closeDialog="isOpenDialog=false" @errorInfo="errorInfo()" v-if="isOpenDialog"/>
   </a-modal>
+</div>
 </template>
 
 <script>
@@ -192,18 +198,18 @@ export default defineComponent({
     });
 
     onMounted(()=>{
-      removeClass()
+      // removeClass()
     })
 
     onUpdated(()=>{
-      removeClass()
+      // removeClass()
     })
 
     const removeClass = ()=>{
-      let icon = getPopupNode('.ant-tree-iconEle');
-      for(var i = 0;i<icon.length;i++){
-        icon[i].innerHTML = ''
-      }
+      // let icon = getPopupNode('.ant-tree-iconEle');
+      // for(var i = 0;i<icon.length;i++){
+      //   icon[i].innerHTML = ''
+      // }
 
     }
 
@@ -280,21 +286,12 @@ export default defineComponent({
     const isShow = ref(false);
     const iconShow = (treeKey)=>{
       isShow.value = treeKey;
-      let d = getPopupNode('.d1');
-      for(var i = 0;i<d.length;i++){
-        if(d[i].innerHTML==treeKey){
-          d[i].parentNode.parentNode.parentNode.classList.add("new-ant-tree-node");
-        }
-      }
+      const div = getPopupNode().querySelectorAll('.tree-content')
+      console.log(div,77);
+      // div[0].style.background = '#fffbe0'
     }
     const iconHidden = (treeKey)=>{
       isShow.value = !treeKey;
-      let d = getPopupNode('.d1');
-      for(var i = 0;i<d.length;i++){
-        if(d[i].innerHTML==treeKey){
-          d[i].parentNode.parentNode.parentNode.classList.remove("new-ant-tree-node");
-        }
-      }
     }
 
 
@@ -341,9 +338,10 @@ export default defineComponent({
       confirmLoading2
     }
   },
-  computed: {
-    getParentNode(){
-      return document.querySelector("[data-name=pf-log]")?document.querySelector("[data-name=pf-log]").shadowRoot:document.body
+  computed: {},
+  methods: {
+    showData(e){
+      // console.log(e,88);
     }
   }
 })
@@ -420,7 +418,9 @@ export default defineComponent({
   }
 
   .fictitious-wrap {
-    flex:1;
+    display: flex;
+    width: 100%;
+    align-items: center;
   }
 
 

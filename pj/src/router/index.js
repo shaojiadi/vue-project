@@ -8,7 +8,7 @@ const routes = [
     component: Home,
   },
   {
-    path: '/about',
+    path: '/pf-log/about',
     name: 'About',
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
@@ -16,13 +16,11 @@ const routes = [
     component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
   }
 ]
+// const router = createRouter({
+//   // history: createWebHistory(process.env.BASE_URL),  //默认
+//   history: createWebHistory(process.env.BASE_URL),  
+//   // history: createWebHistory(window.__POWERED_BY_QIANKUN__ ? "/" : "/about"),
+//   routes
+// })
 
-const router = createRouter({
-  // history: createWebHistory(process.env.BASE_URL),  //默认
-  history: createWebHistory(window.location.pathname),  //默认
-  // history: createMemoryHistory(window.__POWERED_BY_QIANKUN__ ? "/" : "/"),
-  routes
-})
-
-
-export default router
+export default routes

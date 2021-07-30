@@ -29,11 +29,11 @@ export const number2 = /^([0-9]{1,2}|100)$/; //0-100之间的正整数
 
 
 //返回dom节点
-export const getPopupNode = (name = '#root') => {
+export const getPopupNode = () => {
   const box = document.querySelector("[data-name=pf-log]")
   if(!box){
-    return document.body.querySelectorAll(name);
+    return document.body;
   }
   const shadowRoot = box.shadowRoot;
-  return shadowRoot.querySelectorAll(name);
+  return shadowRoot;
 }

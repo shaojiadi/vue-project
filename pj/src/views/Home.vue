@@ -30,7 +30,7 @@ export default {
   methods: {
     onSearch(value) {
       this.content = value;
-    },
+    }
   },
 }
 </script>

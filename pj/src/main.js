@@ -7,14 +7,16 @@ if (window.__POWERED_BY_QIANKUN__) {
 //import "@babel/polyfill";     //将es6转换为浏览器支持的es5,支持低版本浏览器
 import { createApp } from 'vue'
 import App from './App.vue'
-import router from './router'
+import routes from './router'
 import store from './store'
 import { Input, Table, message, Pagination,ConfigProvider,Tree,Modal,Form,Button,Select,Radio,Dropdown,Menu,TreeSelect   } from 'ant-design-vue';
 import 'ant-design-vue/dist/antd.css';
 import './config/mUtils'
 import component from './components/'
+import { createMemoryHistory, createRouter,createWebHistory } from 'vue-router';
 
 let instance = null;
+let router = null;
 
 const components = [
   Input,
@@ -45,8 +47,22 @@ const components = [
 // app.use(store).use(router).mount('#app')
 
 function render(props = {}) {
-  const { container } = props;
-
+  const { history:historyOptions,container } = props;
+  const history = historyOptions? createMemoryHistory():createWebHistory(process.env.BABEL_URL)
+  if(historyOptions){
+    history.push(historyOptions.initialEntries[0])
+  }
+  router =  createRouter({
+    // history: createWebHistory(process.env.BASE_URL),  //默认
+    history: history,  
+    // history: createWebHistory(window.__POWERED_BY_QIANKUN__ ? "/" : "/about"),
+    routes
+  })
+  //vue3重复挂载渲染失败
+  if(instance){
+    instance.unmount();
+    instance = null;
+  }
   instance = createApp(App);
   instance.config.productionTip = false;  
   components.forEach(component => {
