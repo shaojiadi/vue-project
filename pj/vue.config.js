@@ -27,7 +27,7 @@ module.exports = {
         '/api': {
             target: "https://randomuser.me",
             ws:true,   //webscoket是否开启
-            // secure:false, // 使用的是http协议则设置为false，https协议则设置为true
+            secure:true, // 使用的是http协议则设置为false，https协议则设置为true
             changeOrigin:true,
             pathRewrite:{
                 '^/api':'/api'

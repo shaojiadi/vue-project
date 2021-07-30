@@ -13,15 +13,15 @@
     </svg>
   </div>
   <!-- expandedKeys指定展开数的节点  expand展开收起节点时触发  auto-expand-parent是否自动展开父节点 -->
-  <a-tree :tree-data="treeData" v-model:expandedKeys="expandedKeys" v-if="!isSearch" style="margin-left:8px" @mouseenter="showData($event)">
+  <a-tree :tree-data="treeData" v-model:expandedKeys="expandedKeys" v-if="!isSearch" style="margin-left:8px">
     <template #title="{ key: treeKey, title, sort,children}">
       <div  @mouseenter="iconShow(treeKey)" @mouseleave="iconHidden(treeKey)" class="tree-content">
         <div class="virtual-div"></div>
         <div class="fictitious-wrap">
-          <svg class="icon svg-icon" aria-hidden="true" style="margin-right:8px">
+          <svg class="icon svg-icon" aria-hidden="true" style="margin-right:8px;z-index:99">
             <use xlink:href="#iconfolder"></use>
           </svg>
-          <span class="d1">{{ title }}
+          <span style="z-index:99">{{ title }}
             <a-dropdown  placement="bottomRight" 
             :getPopupContainer="
               triggerNode => {
@@ -29,7 +29,7 @@
               }
             "
             >
-              <svg class="icon svg-icon" aria-hidden="true" style="margin-top:4px;float:right;" v-show="isShow==treeKey" @mouseenter="onContent(treeKey,children)" >
+              <svg class="icon svg-icon" aria-hidden="true" style="margin-top:4px;float:right;z-index:99" v-show="isShow==treeKey" @mouseenter="onContent(treeKey,children)" >
                 <use xlink:href="#iconmore1"></use>
               </svg>  
 
@@ -197,21 +197,6 @@ export default defineComponent({
       console.log('expandedKeys', expandedKeys);
     });
 
-    onMounted(()=>{
-      // removeClass()
-    })
-
-    onUpdated(()=>{
-      // removeClass()
-    })
-
-    const removeClass = ()=>{
-      // let icon = getPopupNode('.ant-tree-iconEle');
-      // for(var i = 0;i<icon.length;i++){
-      //   icon[i].innerHTML = ''
-      // }
-
-    }
 
     const dialogTitle = ref('');
     const dialogContent = ref('');
@@ -340,9 +325,6 @@ export default defineComponent({
   },
   computed: {},
   methods: {
-    showData(e){
-      // console.log(e,88);
-    }
   }
 })
 </script>
